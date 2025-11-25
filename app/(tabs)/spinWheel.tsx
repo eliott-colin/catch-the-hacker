@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Easing,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import Svg, { G, Path, Polygon, Text as SvgText } from 'react-native-svg';
 
-const sectors = ["Grosse merde" , "Pas mal", "Bien", "Très bien", "Excellent", "Incroyable"]; 
+const sectors = ["Bien", "Très bien", "Excellent", "Incroyable" ];
+
 
 export default function Wheel() {
+  const [winner, setWinner] = useState(""); 
   const rotation = useSharedValue(0);
 
   const num = sectors.length;
@@ -24,14 +27,24 @@ export default function Wheel() {
 
   const spin = () => {
     rotation.value = withTiming(
-      rotation.value + 360 * 4 + Math.random() * 360,
-      {
-        duration: 3000,
-        easing: Easing.out(Easing.cubic),
-        
+    rotation.value + 360 * 4 + Math.random() * 360,
+    {
+      duration: 3000,
+      easing: Easing.out(Easing.cubic),
+    },
+    (finished) => {
+      if (finished) {
+        const finalRotation = rotation.value % 360 + 90;
+        const sliceAngle = 360 / sectors.length;
+
+        const winningIndex =
+          Math.floor((360 - finalRotation) / sliceAngle) % sectors.length;
+
+        runOnJS(setWinner)(sectors[winningIndex]);
       }
-    );
-  };
+    }
+  );
+};
 
   const getPath = (index: number) => {
     const start = arc * index;
@@ -83,13 +96,15 @@ export default function Wheel() {
         </Svg>
       </Animated.View>
       
+      
       <View style={{ marginTop: 20 }}>
         <Button title="🎡 Spin!" onPress={spin} />
         
         <Text> 
           Appuie sur le bouton pour faire tourner la roue et découvrir ton niveau ! {rotation.value}
         </Text>
-      </View>      
+      </View>
+      <Text>Winner: {winner || "Incroyable"}</Text>     
     </View>
   );
 }
