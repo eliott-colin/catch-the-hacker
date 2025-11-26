@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   Easing,
   runOnJS,
@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { G, Path, Polygon, Text as SvgText } from 'react-native-svg';
 
-const sectors = ["Bien", "Très bien", "Excellent", "Incroyable" ];
+const sectors = ["No question", "Big switch", "Look 2 cards", "Restart", "No question", "Big switch", "Look 2 cards", "Restart"];
 
 
 export default function Wheel() {
@@ -63,9 +63,18 @@ export default function Wheel() {
       <Svg width={300} height={20}>
         <Polygon
           points={`${radius - 10},0 ${radius + 10},0 ${radius},20`}
-          fill="red"
+          fill="white"
         />
       </Svg>
+      <View style= {{
+        borderRadius: radius, 
+        overflow: 'hidden', 
+        shadowColor: "#000", 
+        shadowOffset: { width: 0, height: 8 }, 
+        shadowOpacity: 0.5, 
+        shadowRadius: 10, 
+        elevation: 12, 
+      }}>
       <Animated.View style={animatedStyle}>
         <Svg width={size} height={size}>
           <G>
@@ -73,12 +82,12 @@ export default function Wheel() {
               <G key={i}>
                 <Path
                   d={getPath(i)}
-                  fill={i % 2 ? "#ffcd29" : "#ff6240"}
+                  fill={i % 2 ? "#491844ff" : "#741d73ff"}
                 />
                 <SvgText
                   x={radius + (radius * 0.6) * Math.cos(arc * i + arc / 2)}
                   y={radius + (radius * 0.6) * Math.sin(arc * i + arc / 2)}
-                  fill="#000"
+                  fill="#ffffffff"
                   fontSize={20}
                   textAnchor="middle"
                   alignmentBaseline="middle"
@@ -95,16 +104,45 @@ export default function Wheel() {
           </G>
         </Svg>
       </Animated.View>
+      </View>
       
       
       <View style={{ marginTop: 20 }}>
-        <Button title="🎡 Spin!" onPress={spin} />
+        <TouchableOpacity 
+          onPress={spin}
+          style={{ 
+            backgroundColor: "#ffffffff", 
+            paddingVertical: 15,
+            paddingHorizontal: 35,
+            borderRadius: 10,
+            alignSelf: 'center',
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 5,
+            elevation: 6,
+          }}>
+          <Text style={{ 
+            fontSize: 20, 
+            fontWeight: "bold", 
+            textAlign: "center",
+            color: "#521443ff"
+          }}>
+          Spin!
+          </Text>
+        </TouchableOpacity>
         
-        <Text> 
+        <Text
+        style={{
+          color: "white"
+        }}> 
           Appuie sur le bouton pour faire tourner la roue et découvrir ton niveau ! {rotation.value}
         </Text>
       </View>
-      <Text>Winner: {winner || "Incroyable"}</Text>     
+      <Text
+      style={{
+        color: "white"
+      }}>Winner: {winner || "Incroyable"}</Text>     
     </View>
   );
 }
@@ -118,6 +156,7 @@ const styles = StyleSheet.create({
 });
 const styleContainer = StyleSheet.create({
   container: {
+    backgroundColor: "#121149ff",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
