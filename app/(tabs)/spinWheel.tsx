@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Modal, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Easing,
   runOnJS,
@@ -15,6 +15,7 @@ const sectors = ["Bien", "Très bien", "Excellent", "Incroyable" ];
 export default function Wheel() {
   const [winner, setWinner] = useState(""); 
   const rotation = useSharedValue(0);
+  const [visible, setVisible] = useState(false);
 
   const num = sectors.length;
   const arc = (2 * Math.PI) / num;
@@ -41,6 +42,7 @@ export default function Wheel() {
           Math.floor((360 - finalRotation) / sliceAngle) % sectors.length;
 
         runOnJS(setWinner)(sectors[winningIndex]);
+        setVisible(true);
       }
     }
   );
@@ -98,18 +100,27 @@ export default function Wheel() {
       
       
       <View style={{ marginTop: 20 }}>
-        <Button title="🎡 Spin!" onPress={spin} />
-        
-        <Text> 
-          Appuie sur le bouton pour faire tourner la roue et découvrir ton niveau ! {rotation.value}
-        </Text>
+        <Button title="🎡 Spin!" onPress={() => { spin();}}  />
       </View>
-      <Text>Winner: {winner || "Incroyable"}</Text>     
+      <Text>Appuie sur le bouton pour faire tourner la roue et découvrir ton niveau ! {rotation.value}</Text>   
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={visible}
+        onRequestClose={() => setVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <Text>
+            Winner: {winner || "Incroyable"}            
+          </Text>
+          <Button title="Fermer" onPress={() => setVisible(false)} />  
+        </View>
+      </Modal>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ 
   container: {
     flex: 1,
     justifyContent: "center",
