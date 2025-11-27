@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import React, { useState } from "react";
+import { Button, Modal, , Text, View , TouchableOpacity , StyleSheet} from "react-native";
 import Animated, {
   Easing,
   runOnJS,
@@ -15,6 +16,7 @@ const sectors = ["No question", "Big switch", "Look 2 cards", "Restart", "No que
 export default function Wheel() {
   const [winner, setWinner] = useState(""); 
   const rotation = useSharedValue(0);
+  const [visible, setVisible] = useState(false);
 
   const num = sectors.length;
   const arc = (2 * Math.PI) / num;
@@ -41,6 +43,7 @@ export default function Wheel() {
           Math.floor((360 - finalRotation) / sliceAngle) % sectors.length;
 
         runOnJS(setWinner)(sectors[winningIndex]);
+        setVisible(true);
       }
     }
   );
@@ -142,12 +145,25 @@ export default function Wheel() {
       <Text
       style={{
         color: "white"
-      }}>Winner: {winner || "Incroyable"}</Text>     
+      }}>Winner: {winner || "Incroyable"}</Text>       
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={visible}
+        onRequestClose={() => setVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <Text>
+            Winner: {winner || "Incroyable"}            
+          </Text>
+          <Button title="Fermer" onPress={() => setVisible(false)} />  
+        </View>
+      </Modal>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ 
   container: {
     flex: 1,
     justifyContent: "center",
